@@ -26,6 +26,7 @@ import tempfile
 import numpy as np
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
 
 app = Flask(__name__)
 
