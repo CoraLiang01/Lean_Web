@@ -696,7 +696,7 @@ function appData() {
                     
                     this.chatMessages.push({
                         role: 'assistant',
-                        content: data.solution
+                        content: data.solution.replace(/\*/g, '&ast;')
                     });
                     this.$nextTick(() => {
                         // Process math expressions with KaTeX

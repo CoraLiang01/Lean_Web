@@ -408,6 +408,7 @@ def convert_to_typora_markdown(content):
     # content = content.replace(r'\{ ', '\\{').replace(r' \}', '\\}') 
     # content = content.replace('\text', '\\mathrm')
     # content = content.replace('\t', '\\t')
+
     content = content.replace(r'\[', '$$').replace(r'\]', '$$') 
     content = content.replace(r'\( ', '$').replace(r' \)', '$') 
     content = content.replace(r'\(', '$').replace(r'\)', '$')
@@ -2643,19 +2644,3 @@ else:
 
 # if __name__ == '__main__':
 #     app.run(host='0.0.0.0', port=5050, debug=True)
-
-def open_browser():
-    # 自动打开cpolar公网地址（替换xxxx为你的实际URL）
-    webbrowser.open_new('https://xxxx.cpolar.cn')  
-    # 可选：同时打开本地地址
-    webbrowser.open_new_tab('http://localhost:5050/')
-
-@app.route('/')
-def home():
-    return "服务已启动！通过公网URL访问我吧！"
-
-if __name__ == '__main__':
-    # 确保只在主线程打开浏览器（避免debug模式重复打开）
-    if os.environ.get('WERKZEUG_RUN_MAIN') != 'true':
-        threading.Timer(1.0, open_browser).start()
-    app.run(host='0.0.0.0', port=5050, debug=True)

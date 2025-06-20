@@ -417,6 +417,7 @@ def convert_to_typora_markdown(content):
     content = content.replace(r'\text{', r'\mathrm{')  # 将 \text{ 替换为 \mathrm{
     content = content.replace('\text', '\\mathrm')  # 确保 \text 变为 \mathrm
     content = content.replace('\t', '\\t')  # 保留原来的制表符替换
+    content = content.replace('&ast;', '*')
 
     return content
 

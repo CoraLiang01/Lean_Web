@@ -66,46 +66,6 @@ def analyze():
         return jsonify({'error': 'Missing required parameters'}), 400
         
     try:
-        # # Initialize first LLM for question classification
-        # llm1 = ChatOpenAI(
-        #     temperature=0.0,
-        #     model_name="gpt-4",
-        #     openai_api_key=api_key
-        # )
-        
-        # # Load reference documents
-        # loader = CSVLoader(file_path="RefData.csv", encoding="utf-8")
-        # documents = loader.load()
-        
-        # # Create embeddings and vector store
-        # embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-        # vectors = FAISS.from_documents(documents, embeddings)
-        # retriever = vectors.as_retriever(search_kwargs={'k': 5})
-        
-        # # Build retrieval QA chain
-        # qa_chain = RetrievalQA.from_chain_type(
-        #     llm=llm1,
-        #     chain_type="stuff",
-        #     retriever=retriever,
-        #     return_source_documents=True,
-        # )
-        
-        # # Create QA tool
-        # qa_tool = Tool(
-        #     name="FileQA",
-        #     func=qa_chain.invoke,
-        #     description="Use this tool to answer questions about the problem type of the text."
-        # )
-        
-        # # Initialize Agent
-        # agent1 = initialize_agent(
-        #     tools=[qa_tool],
-        #     llm=llm1,
-        #     agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-        #     verbose=True,
-        #     handle_parsing_errors=True,
-        # )
-        # Initialize the LLM
         llm1 = ChatOpenAI(
             temperature=0.0, model_name="gpt-4", openai_api_key=api_key
         )
@@ -408,6 +368,7 @@ def convert_to_typora_markdown(content):
     # content = content.replace(r'\{ ', '\\{').replace(r' \}', '\\}') 
     # content = content.replace('\text', '\\mathrm')
     # content = content.replace('\t', '\\t')
+
     content = content.replace(r'\[', '$$').replace(r'\]', '$$') 
     content = content.replace(r'\( ', '$').replace(r' \)', '$') 
     content = content.replace(r'\(', '$').replace(r'\)', '$')

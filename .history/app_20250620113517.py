@@ -408,6 +408,7 @@ def convert_to_typora_markdown(content):
     # content = content.replace(r'\{ ', '\\{').replace(r' \}', '\\}') 
     # content = content.replace('\text', '\\mathrm')
     # content = content.replace('\t', '\\t')
+    content = content.replace(r'\[', '$$').replace(r'\]', '$$')  # 将 \[ 和 \] 替换为 $$，用于 Typora 的数学公式
     content = content.replace(r'\[', '$$').replace(r'\]', '$$') 
     content = content.replace(r'\( ', '$').replace(r' \)', '$') 
     content = content.replace(r'\(', '$').replace(r'\)', '$')

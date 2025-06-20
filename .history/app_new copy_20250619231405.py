@@ -66,52 +66,12 @@ def analyze():
         return jsonify({'error': 'Missing required parameters'}), 400
         
     try:
-        # # Initialize first LLM for question classification
-        # llm1 = ChatOpenAI(
-        #     temperature=0.0,
-        #     model_name="gpt-4",
-        #     openai_api_key=api_key
-        # )
-        
-        # # Load reference documents
-        # loader = CSVLoader(file_path="RefData.csv", encoding="utf-8")
-        # documents = loader.load()
-        
-        # # Create embeddings and vector store
-        # embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-        # vectors = FAISS.from_documents(documents, embeddings)
-        # retriever = vectors.as_retriever(search_kwargs={'k': 5})
-        
-        # # Build retrieval QA chain
-        # qa_chain = RetrievalQA.from_chain_type(
-        #     llm=llm1,
-        #     chain_type="stuff",
-        #     retriever=retriever,
-        #     return_source_documents=True,
-        # )
-        
-        # # Create QA tool
-        # qa_tool = Tool(
-        #     name="FileQA",
-        #     func=qa_chain.invoke,
-        #     description="Use this tool to answer questions about the problem type of the text."
-        # )
-        
-        # # Initialize Agent
-        # agent1 = initialize_agent(
-        #     tools=[qa_tool],
-        #     llm=llm1,
-        #     agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-        #     verbose=True,
-        #     handle_parsing_errors=True,
-        # )
-        # Initialize the LLM
         llm1 = ChatOpenAI(
             temperature=0.0, model_name="gpt-4", openai_api_key=api_key
         )
 
         # Load and process the data
-        loader = CSVLoader(file_path="RefData.csv", encoding="utf-8")
+        loader = CSVLoader(file_path="Large_Scale_Or_Files/RefData.csv", encoding="utf-8")
         data = loader.load()
 
         # Each line is a document
@@ -234,123 +194,11 @@ def solve():
         return jsonify({'error': 'Missing required parameters'}), 400
         
     try:
-        # Process based on problem type
-        if query == 't':
-            result_nrm = '''
-$$
-
-\small
-\begin{align*}
-\max \quad & \sum_{i=1}^{n} R_i x_i \\
-\mathrm{s.t.} \quad & x_i \leq I_i, \quad \forall i \quad \text{(inventory constraint)} \\
-& x_i \leq D_i, \quad \forall i \quad \text{(demand constraint)} \\
-& x_i \in \mathbb{Z}_+, \quad \forall i \\
-\quad & \text{where,} \\
-& R = [1283.7,\, 321.11,\, 1003.56,\, 371.56,\, 641.22,\, 1316.82,\, 1088.57,\, 513.64,\, 956.78,\, 178.22,\, 467.93,\, 377.8,\, 805.82,\, 894.34,\, 1409.21,\, 348.43,\, 1211.35,\, 875.91,\, 153.61,\, 951.85,\, 867.3,\, 992.14,\, 728.62,\, 1237.37,\, 287.36,\, 178.52,\, 1068.1,\, 1196.95,\, 973.62,\, 498.77,\, 1269.71,\, 518.67,\, 701.97,\, 338.6,\, 167.99,\, 678.72,\, 549.92,\, 1030.8,\, 478.36,\, 1285.81,\, 1175.92,\, 1118.63,\, 156.02,\, 753.55,\, 256.42,\, 1136.87,\, 1279.24,\, 887.06,\, 479.44,\, 1318.33,\, 1479.23,\, 367.91,\, 462.26,\, 448.61,\, 971.93,\, 1183.94,\, 1064.72,\, 872.16,\, 245.81,\, 1134.19,\, 972.1,\, 483.26,\, 507.13,\, 965.34,\, 1184.54,\, 139.14,\, 1128.07,\, 169.7,\, 1042.66,\, 869.95,\, 1385.88] \\
-& I = [70,\, 500,\, 80,\, 30,\, 250,\, 690,\, 340,\, 510,\, 990,\, 440,\, 190,\, 240,\, 850,\, 900,\, 760,\, 440,\, 240,\, 40,\, 700,\, 300,\, 680,\, 880,\, 670,\, 270,\, 890,\, 580,\, 480,\, 850,\, 920,\, 170,\, 960,\, 800,\, 290,\, 790,\, 260,\, 600,\, 40,\, 170,\, 760,\, 820,\, 590,\, 50,\, 470,\, 830,\, 670,\, 170,\, 350,\, 600,\, 610,\, 360,\, 760,\, 680,\, 160,\, 620,\, 210,\, 150,\, 200,\, 360,\, 950,\, 470,\, 290,\, 570,\, 790,\, 890,\, 580,\, 310,\, 560,\, 880,\, 350,\, 830] \\
-& D = [9,\, 65,\, 10,\, 4,\, 31,\, 98,\, 48,\, 64,\, 125,\, 66,\, 28,\, 29,\, 112,\, 116,\, 102,\, 55,\, 32,\, 5,\, 100,\, 40,\, 101,\, 131,\, 97,\, 40,\, 121,\, 81,\, 60,\, 112,\, 138,\, 26,\, 130,\, 102,\, 43,\, 109,\, 33,\, 84,\, 6,\, 25,\, 102,\, 121,\, 76,\, 7,\, 59,\, 125,\, 96,\, 24,\, 52,\, 87,\, 78,\, 79,\, 54,\, 95,\, 90,\, 20,\, 90,\, 30,\, 21,\, 25,\, 45,\, 125,\, 62,\, 42,\, 80,\, 109,\, 132,\, 75,\, 43,\, 75,\, 110,\, 48,\, 122]
-\end{align*}
-
-$$'''
-            # result_nrm = result_nrm.replace('\begin', '\\\\begin').replace('\end', '\\\end')
-            # result_nrm = result_nrm.replace(' \\', ' \\\\\\\\\\\\\\\\').replace('\f', '\\f')
-            # result_nrm = result_nrm.replace('\text', '\\mathrm').replace(',\, ', ', ')
-
-            # result_nrm = result_nrm.replace('\\\\\\\\\\\\\\\quad', '\quad')
-            # result_nrm = result_nrm.replace('\\\\\\\\\\\\\\\sum', '\sum')
-            # result_nrm = result_nrm.replace('\\\\\\\\\\\\\\\leq', '\leq')
-            # result_nrm = result_nrm.replace('\\\\\\\\\\\\\\\in', '\in')
-            # result_nrm = result_nrm.replace('\\\\\\\\\\\\\\\mathbb', '\mathbb')
-            # result_nrm = result_nrm.replace(' $i$', '')
-            # result_nrm = result_nrm.replace('for each product', '')
-            result_nrm = result_nrm.replace('\begin', '\\\\begin')\
-                        .replace('\end', '\\\\end')\
-                        .replace(' \\', ' \\\\\\\\\\\\\\\\')\
-                        .replace('\f', '\\f')\
-                        .replace('\text', '\\mathrm')\
-                        .replace(',\, ', ', ')\
-                        .replace('\\\\\\\\\\\\\\\quad', '\quad')\
-                        .replace('\\\\\\\\\\\\\\\sum', '\sum')\
-                        .replace('\\\\\\\\\\\\\\\leq', '\leq')\
-                        .replace('\\\\\\\\\\\\\\\in', '\in')\
-                        .replace('\\\\\\\\\\\\\\\mathbb', '\mathbb')\
-                        .replace(' $i$', '')\
-                        .replace('for each product', '')\
-                        .replace('\\forall', '\\\\forall').replace('$$\n','$$').replace('\n$$','$$')  # 这里是你要的替换
-
-            print(result_nrm)
-            result = '''
-This is a LaTeX expression:
-$$
-\small
-\\begin{align*}
-\max \quad &\sum_{i} A_i x_i \\\\\\\\
-\mathrm{s.t.} \quad & x_i \leq I_i, \quad \\forall i \quad \mathrm{(inventory ~ constraint)}\\\\\\\\
-\quad & x_i \leq d_i, \quad \\forall i \quad \mathrm{(demand ~ constraint)}\\\\\\\\
-\quad & \sum_i x_i \geq s, \quad \\forall i \quad \mathrm{(startup ~ constraint)}\\\\\\\\
-\quad & \mathrm{where} ~ I = [97, 240, 322, 281] \\\\\\\\
-\quad & A =  [11197, 9097, 11197, 9995] \\\\\\\\
-\quad & d =  [17, 26, 50, 53] \\\\\\\\
-\quad & s = 100
-\\end{align*}
-$$
-
-Second LaTeX expression:
-
-$$
-\small
-\\begin{align*}
-\max \quad & \sum_{i=1}^{n} R_i x_i \\\\\\\\
-\mathrm{s.t.} \quad & x_i \leq I_i, \quad \forall i \quad \mathrm{(inventory constraint)} \\\\\\\\
-& x_i \leq D_i, \quad \forall i \quad \mathrm{(demand constraint)} \\\\\\\\
-& x_i \in \mathbb{Z}_+, \quad \forall i \\\\\\\\
-\quad & \mathrm{where,} \\\\\\\\
-& R = [1283.7, 321.11, 1003.56, 371.56, 641.22, 1316.82, 1088.57, 513.64, 956.78, 178.22, 467.93, 377.8, 805.82, 894.34, 1409.21, 348.43, 1211.35, 875.91, 153.61, 951.85, 867.3, 992.14, 728.62, 1237.37, 287.36, 178.52, 1068.1, 1196.95, 973.62, 498.77, 1269.71, 518.67, 701.97, 338.6, 167.99, 678.72, 549.92, 1030.8, 478.36, 1285.81, 1175.92, 1118.63, 156.02, 753.55, 256.42, 1136.87, 1279.24, 887.06, 479.44, 1318.33, 1479.23, 367.91, 462.26, 448.61, 971.93, 1183.94, 1064.72, 872.16, 245.81, 1134.19, 972.1, 483.26, 507.13, 965.34, 1184.54, 139.14, 1128.07, 169.7, 1042.66, 869.95, 1385.88] \\\\\\\\
-& I = [70, 500, 80, 30, 250, 690, 340, 510, 990, 440, 190, 240, 850, 900, 760, 440, 240, 40, 700, 300, 680, 880, 670, 270, 890, 580, 480, 850, 920, 170, 960, 800, 290, 790, 260, 600, 40, 170, 760, 820, 590, 50, 470, 830, 670, 170, 350, 600, 610, 360, 760, 680, 160, 620, 210, 150, 200, 360, 950, 470, 290, 570, 790, 890, 580, 310, 560, 880, 350, 830] \\\\\\\\
-& D = [9, 65, 10, 4, 31, 98, 48, 64, 125, 66, 28, 29, 112, 116, 102, 55, 32, 5, 100, 40, 101, 131, 97, 40, 121, 81, 60, 112, 138, 26, 130, 102, 43, 109, 33, 84, 6, 25, 102, 121, 76, 7, 59, 125, 96, 24, 52, 87, 78, 79, 54, 95, 90, 20, 90, 30, 21, 25, 45, 125, 62, 42, 80, 109, 132, 75, 43, 75, 110, 48, 122]
-\\end{align*}
-$$
-
-Another LaTeX expression:
-$$
-\small
-\\begin{align*}
-\max \quad & \sum_{i}^n R_i x_i \\\\\\\\
-\mathrm{s.t.} \quad & x_i \leq I_i, \quad \\forall i \quad \mathrm{(inventory ~ constraint)} \\\\\\\\
-& x_i \leq D_i, \quad \\forall i \quad \mathrm{(demand ~ constraint)} \\\\\\\\
-& x_i \in \mathbb{Z}_+, \quad \\forall i \\\\\\\\
-\quad & \mathrm{where,} \\\\\\\\
-& R = [1283.7, 321.11, 1003.56, 371.56, 641.22, 1316.82, 513.64, 1088.57, 956.78, 178.22, 467.93, 377.8, 805.82, 894.34, 348.43, 1409.21, 1211.35, 875.91, 153.61, 951.85, 1237.37, 867.3, 992.14, 728.62, 287.36, 178.52, 1068.1, 973.62, 498.77, 1269.71, 1196.95, 518.67, 701.97, 338.6, 167.99, 678.72, 549.92, 1030.8, 478.36, 1285.81, 887.06, 1175.92, 1118.63, 156.02, 256.42, 753.55, 1136.87, 1279.24, 479.44, 1318.33, 1479.23, 367.91, 462.26, 1183.94, 1064.72, 448.61, 971.93, 872.16, 483.26, 972.1, 245.81, 1134.19, 507.13, 965.34, 1184.54, 139.14, 1128.07, 169.7, 1042.66, 869.95, 1385.88] \\\\\\\\
-& I = [70, 500, 80, 30, 250, 690, 510, 340, 990, 440, 190, 240, 850, 900, 440, 760, 240, 40, 700, 300, 270, 680, 880, 670, 890, 580, 480, 920, 170, 960, 850, 800, 290, 790, 260, 600, 40, 170, 760, 820, 600, 590, 50, 470, 670, 830, 170, 350, 600, 610, 360, 760, 680, 210, 150, 160, 620, 200, 290, 470, 360, 950, 570, 790, 890, 580, 310, 560, 880, 350, 830] \\\\\\\\
-& D = [9, 65, 10, 4, 31, 98, 64, 48, 125, 66, 28, 29, 112, 116, 55, 102, 32, 5, 100, 40, 40, 101, 131, 97, 121, 81, 60, 138, 26, 130, 112, 102, 43, 109, 33, 84, 6, 25, 102, 121, 87, 76, 7, 59, 96, 125, 24, 52, 78, 79, 54, 95, 90, 30, 21, 20, 90, 25, 42, 62, 45, 125, 80, 109, 132, 75, 43, 75, 110, 48, 122]
-\\end{align*}
-$$
-
-This is a math expression:
-
-$$
-x_i \leq I_i, \quad \\forall i
-$$
-
-And here's some Python code:
-
-```python
-def greet(name):
-    return f"Hello, {name}"
-```
-'''
-            # result = result.replace('\\', '\\\\')
-            # result = result.replace('\\\\', '\\\\\\\\')
-            
-            rendered_solution = result_nrm
-            # rendered_solution = markdown.markdown(result, extensions=["fenced_code", CodeHiliteExtension()])
-
-        else:
-            result = process_problem_type(query, api_key, problem_type)
-            # result = result.replace('\\', '\\\\')
-            # result = result.replace('\\\\', '\\\\\\\\')
-        # rendered_solution = render_markdown_with_highlight(result)
-            rendered_solution = markdown.markdown(result, extensions=["fenced_code", CodeHiliteExtension()])
+        result = process_problem_type(query, api_key, problem_type)
+        # result = result.replace('\\', '\\\\')
+        # result = result.replace('\\\\', '\\\\\\\\')
+    # rendered_solution = render_markdown_with_highlight(result)
+        rendered_solution = markdown.markdown(result, extensions=["fenced_code", CodeHiliteExtension()])
 
         rendered_solution = result
         return jsonify({
@@ -400,14 +248,6 @@ def render_markdown_with_highlight(md_text):
     return sanitized_content
 
 def convert_to_typora_markdown(content):
-    # content = content.replace(r'\[', '$$').replace(r'\]', '$$') 
-    # content = content.replace(r'\( ', '$').replace(r' \)', '$') 
-    # content = content.replace(r'\(', '$').replace(r'\)', '$')
-    # content = content.replace(r'\text{Maximize}', '\max').replace(r'\text{Maximize}', '\min')
-    # content = content.replace(r'\t ', '\\t').replace(r' \f', '\\f') 
-    # content = content.replace(r'\{ ', '\\{').replace(r' \}', '\\}') 
-    # content = content.replace('\text', '\\mathrm')
-    # content = content.replace('\t', '\\t')
     content = content.replace(r'\[', '$$').replace(r'\]', '$$') 
     content = content.replace(r'\( ', '$').replace(r' \)', '$') 
     content = content.replace(r'\(', '$').replace(r'\)', '$')
@@ -419,11 +259,6 @@ def convert_to_typora_markdown(content):
     content = content.replace('\t', '\\t')  # 保留原来的制表符替换
 
     return content
-
-# def extract_problem_type(output_text):
-#     pattern = r'(Network Revenue Management|Resource Allocation|Transportation|Sales-Based Linear Programming|SBLP|Facility Location|Others without CSV|Others without csv)'
-#     match = re.search(pattern, output_text, re.IGNORECASE)
-#     return match.group(0) if match else "Others with CSV"
 
 def extract_problem_type(output_text):
     pattern = r'(Network Revenue Management|Network Revenue Management Problem|Resource Allocation|Resource Allocation Problem|Transportation|Transportation Problem|Facility Location Problem|Assignment Problem|AP|Uncapacited Facility Location Problem|NRM|RA|TP|FLP|UFLP|Others without CSV|Sales-Based Linear Programming|SBLP)'
@@ -459,9 +294,9 @@ def process_dataset_address(dataset_address: str) -> List[Document]:
             for row_idx, row in df.iterrows():
                 page_content = ", ".join([f"{col} = {row[col]}" for col in df.columns])
                 documents.append(Document(page_content=page_content))
-            print("-"*50+'documents'+"-"*50)
-            print(documents)
-            print('-'*110)
+            # print("-"*50+'documents'+"-"*50)
+            # print(documents)
+            # print('-'*110)
                 
         except Exception as e:
             print(f"Error processing file {file_address}: {e}")
@@ -470,12 +305,10 @@ def process_dataset_address(dataset_address: str) -> List[Document]:
     return documents
 
 
-
-
 def get_NRM_response(query,api_key,uploaded_files):
 
     retrieve='product'
-    loader = CSVLoader(file_path="Large_Scale_Or_Files/RAG_Example_NRM2.csv", encoding="utf-8")
+    loader = CSVLoader(file_path="Large_Scale_Or_Files/RAG_Example_NRM2_MD.csv", encoding="utf-8")
     data = loader.load()
     documents = data
     embeddings = OpenAIEmbeddings(openai_api_key=api_key)
@@ -592,7 +425,7 @@ Final Answer:
 
 def get_RA_response(query,api_key,uploaded_files):
     retrieve="product"
-    loader = CSVLoader(file_path="Large_Scale_Or_Files/RAG_Example_RA2.csv", encoding="utf-8")
+    loader = CSVLoader(file_path="Large_Scale_Or_Files/RAG_Example_RA2_MD.csv", encoding="utf-8")
     data = loader.load()
 
     # Each line is a document
@@ -645,7 +478,7 @@ Action: CSVQA
 
 Action Input: Retrieve all the {retrieve} data related to {Related} to formulate the mathematical model with no simplification or abbreviation.
 
-Observation: 
+Observation: {example_data_description}
 
 Thought: Now that I have the necessary data, I would construct the objective function and constraints using the retrieved data as parameters of the formula. I should pay attention if there is further detailed constraint in the problem description. If so, I should generate additional constraint formula according to the retrieved 'product id'. Do NOT include any explanations, notes, or extra text. Format the expressions strictly in markdown, following this example. Besides, I need to use the $$ or $ to wrap the mathematical expressions instead of \[, \], \( or \). I also should avoid using align, align* and other latex environments. Besides, I should also avoid using \begin, \end, \text.
 
@@ -656,10 +489,20 @@ Final Answer:
     data = []
     for df_index, (file_name, df) in enumerate(uploaded_files):
         data.append(f"\nDataFrame {df_index + 1} - {file_name}:\n")
-        for i, r in df.iterrows():
-            description = ""
-            description += ", ".join([f"{col} = {r[col]}" for col in df.columns])
-            data.append(description + "\n")
+        # for i, r in df.iterrows():
+        #     description = ""
+        #     description += ", ".join([f"{col} = {r[col]}" for col in df.columns])
+        #     data.append(description + "\n")
+        if file_name=='products.csv' or file_name=='Products.csv':
+            for i, r in df.iterrows():
+                description = f"Product id: {i+1}; "
+                description += ", ".join([f"{col} = {r[col]}" for col in df.columns])
+                data.append(description + "\n")
+        else:
+            for i, r in df.iterrows():
+                description = f""
+                description += ", ".join([f"{col} = {r[col]}" for col in df.columns])
+                data.append(description + "\n")
     documents = [content for content in data]
 
 #    documents = process_dataset_address(dataset_address)
@@ -668,7 +511,7 @@ Final Answer:
     embeddings = OpenAIEmbeddings(openai_api_key=api_key)
     vectors = FAISS.from_texts(documents, embeddings)
     retriever = vectors.as_retriever(search_kwargs={'k': 220})
-    llm2 = ChatOpenAI(temperature=0.0, model_name='gpt-4.1', openai_api_key=api_key)
+    llm2 = ChatOpenAI(temperature=0.0, model_name='gpt-4.1', top_p=1,n = 1, openai_api_key=api_key)
 
 
     system_prompt = (
@@ -1126,7 +969,6 @@ Final Answer:
 
     result = agent2.invoke(query)
     return result
-
 
 def get_code(output,selected_problem,api_key):
     llm_code = ChatOpenAI(
@@ -1593,59 +1435,38 @@ def process_problem_type(query, api_key, problem_type):
     # Read global uploaded files
     global uploaded_files
 
-    # 2. Select RAG reference file and few-shot template based on problem type
-    # if problem_type == "Network Revenue Management":
     if problem_type == "Network Revenue Management" or problem_type == "NRM" or problem_type == "Network Revenue Management Problem":
         result = get_NRM_response(query, api_key, uploaded_files)
         model = convert_to_typora_markdown(result['output'])
         code_response = get_code(output=result,selected_problem=problem_type,api_key=api_key)
         output = """### The Mathematical model is as follows:\n\n""" + model + """\n\n ### The Corresonding code is as follows: \n\n ```python \n\n """ + code_response + """\n\n ``` \n\n"""   
-        # output = result['output']
-        # result_nrm = output
-        # result_nrm = result_nrm.replace('\begin', '\\\\begin')\
-        #     .replace('\end', '\\\\end')\
-        #     .replace(' \\', ' \\\\\\\\\\\\\\\\')\
-        #     .replace('\f', '\\f')\
-        #     .replace('\text', '\\mathrm')\
-        #     .replace(',\, ', ', ')\
-        #     .replace('\\\\\\\\\\\\\\\quad', '\quad')\
-        #     .replace('\\\\\\\\\\\\\\\sum', '\sum')\
-        #     .replace('\\\\\\\\\\\\\\\leq', '\leq')\
-        #     .replace('\\\\\\\\\\\\\\\in', '\in')\
-        #     .replace('\\\\\\\\\\\\\\\mathbb', '\mathbb')\
-        #     .replace(' $i$', '')\
-        #     .replace('for each product', '')\
-        #     .replace('\\forall', '\\\\forall').replace('$$\n','$$').replace('\n$$','$$')  # 这里是你要的替换
-        # output = result_nrm
-        # print(output)
     elif problem_type == "Resource Allocation" or problem_type == "RA" or problem_type == "Resource Allocation Problem":
         result = get_RA_response(query, api_key, uploaded_files)
         output = result['output']
         model = convert_to_typora_markdown(result['output'])
         code_response = get_code(output=result,selected_problem=problem_type,api_key=api_key)
         output = """### The Mathematical model is as follows:\n\n""" + model + """\n\n ### The Corresonding code is as follows: \n\n ```python \n\n """ + code_response + """\n\n ``` \n\n"""
-        print(output)  
     elif problem_type == "Transportation" or problem_type == "TP" or problem_type == "Transportation Problem":
         result = get_TP_response(query, api_key, uploaded_files)
         output = result['output']
         model = convert_to_typora_markdown(result['output'])
         code_response = get_code(output=result,selected_problem=problem_type,api_key=api_key)
         output = """### The Mathematical model is as follows:\n\n""" + model + """\n\n ### The Corresonding code is as follows: \n\n ```python \n\n """ + code_response + """\n\n ``` \n\n"""
-        print(output)  
+
     elif problem_type == "Facility Location Problem" or problem_type == "FLP" or problem_type == "Uncapacited Facility Location" or problem_type == "UFLP":
         result = get_FLP_response(query, api_key, uploaded_files)
         output = result['output']
         model = convert_to_typora_markdown(result['output'])
         code_response = get_code(output=result,selected_problem=problem_type,api_key=api_key)
         output = """### The Mathematical model is as follows:\n\n""" + model + """\n\n ### The Corresonding code is as follows: \n\n ```python \n\n """ + code_response + """\n\n ``` \n\n"""
-        print(output)  
+
     elif problem_type == "Assignment Problem" or problem_type == "AP":
         result = get_AP_response(query, api_key, uploaded_files)
         output = result['output']
         model = convert_to_typora_markdown(result['output'])
         code_response = get_code(output=result,selected_problem=problem_type,api_key=api_key)
         output = """### The Mathematical model is as follows:\n\n""" + model + """\n\n ### The Corresonding code is as follows: \n\n ```python \n\n """ + code_response + """\n\n ``` \n\n"""
-        print(output)  
+
     elif problem_type == "Sales-Based Linear Programming" or problem_type == "SBLP":
         def LoadFiles():
             for df_index, (file_name, df) in enumerate(uploaded_files):
@@ -2050,7 +1871,7 @@ def process_problem_type(query, api_key, problem_type):
             return results
 
         def FlowAgent(query):
-            loader = CSVLoader(file_path="RAG_Example_SBLP_Flow.csv", encoding="utf-8")
+            loader = CSVLoader(file_path="Large_Scale_Or_Files/RAG_Example_SBLP_Flow.csv", encoding="utf-8")
             data = loader.load()
             documents = data
             embeddings = OpenAIEmbeddings(openai_api_key=api_key)
@@ -2245,8 +2066,8 @@ else:
 
             tools = [Tool(name="CSVQA", func=csv_qa_tool_flow, description="Retrieve flight data."),Tool(name="CName", func=retrieve_key_information, description="Retrieve flight information.")]
 
-            llm = ChatOpenAI(model="gpt-4.1", temperature=0, openai_api_key=api_key)
-            prefix = f"""You are an assistant that generates a mathematical model based on the user's description and provided CSV data.
+            llm = ChatOpenAI(model="gpt-4", temperature=0, openai_api_key=api_key)
+            prefix = f"""You are an assistant that generates a SBLP mathematical model and the corresponding Gurobi Python code based on the user's description and provided CSV data.  When you need to retrieve information from the CSV file, please use the CSVQA tool. When you need to retrieve flight information, please use the CName tool.
 
             Please refer to the following example and generate the answer in the same format:
 
@@ -2254,7 +2075,6 @@ else:
 
             Note: Please retrieve all neccessary information from the CSV file to generate the answer. When you generate the answer, please output required parameters in a whole text, including all vectors and matrices.
 
-            When you need to retrieve information from the CSV file, and write SBLP formulation by using the provided tools.
 
             """
 
@@ -2281,9 +2101,9 @@ else:
 
         def policy_sblp_flow_model_code(query):
             agent2 = FlowAgent(query)
-            llm_code = ChatOpenAI(
-                temperature=0.0, model_name="gpt-4.1", openai_api_key=api_key
-            )
+            # llm_code = ChatOpenAI(
+            #     temperature=0.0, model_name="gpt-4.1", openai_api_key=api_key
+            # )
             result = agent2.invoke({"input": query})
             output_model = result['output']
 
@@ -2443,7 +2263,7 @@ else:
 
         def CA_Agent(query):
 
-            loader = CSVLoader(file_path="RAG_Example_SBLP_CA.csv", encoding="utf-8")
+            loader = CSVLoader(file_path="Large_Scale_Or_Files/RAG_Example_SBLP_CA.csv", encoding="utf-8")
             data = loader.load()
             documents = data
             embeddings = OpenAIEmbeddings(openai_api_key=api_key)
@@ -2466,7 +2286,7 @@ else:
 
             Observation: {example_matches}
 
-            Thought: I need to retrieve relevant information from 'information1.csv' for the given OD and Departure Time values. Next I need to retrieve the relevant coefficients from v1 and v2 based on the retrieved ticket information. 
+            Thought: I need to extract all relevant information from the files 'flight.csv', 'od_demand.csv', 'v1.csv', and 'v2.csv' based on the required ticket attributes. It is essential that I do not overlook any useful information, and the retrieved parameters should remain unfolded.
             
             Action: CSVQA
 
@@ -2474,7 +2294,7 @@ else:
 
             Observation: {example_data_description}
 
-            Thought: I now have all the required information from the CSV, including p,d,v,r_0,r,v_0,v,c_f,C and so on for the specified flights. I will now formulate the SBLP model in markdown format, following the example provided, including all constraints, retrieved information, and generated code.
+            Thought: I now have all the required information from the CSV, including p,d,v,r_0,r,v_0,v,c_f,C and so on for the specified flights. I will now formulate the SBLP model in markdown format, following the example provided, including all constraints, retrieved information, and generated code.Remember that all the retrieved parameters should remain unfolded in the final answer.
 
 
             Final Answer:
@@ -2571,16 +2391,14 @@ else:
 
             tools = [Tool(name="CSVQA", func=csv_qa_tool_CA, description="Retrieve flight data."),Tool(name="CName", func=retrieve_key_information, description="Retrieve flight information.")]
 
-            llm = ChatOpenAI(model="gpt-4.1", temperature=0, openai_api_key=api_key)
-            prefix = f"""You are an assistant that generates a mathematical model based on the user's description and provided CSV data.
+            llm = ChatOpenAI(model="gpt-4", temperature=0, openai_api_key=api_key)
+            prefix = f"""You are an assistant that generates a SBLP mathematical model and the corresponding Gurobi Python code based on the user's description and provided CSV data.  When you need to retrieve information from the CSV file, please use the CSVQA tool. When you need to retrieve flight information, please use the CName tool.
 
             Please refer to the following example and generate the answer in the same format:
 
             {fewshot_example}
 
             Note: Please retrieve all neccessary information from the CSV file to generate the answer. When you generate the answer, please output required parameters in a whole text, including all vectors and matrices.
-
-            When you need to retrieve information from the CSV file, and write SBLP formulation by using the provided tools.
 
             """
 
@@ -2614,19 +2432,11 @@ else:
             result = get_answer(query)
             return result
         if "flow conservation constraints" in query:
-            # print("Recommend Optimal Flights With Flow Conervation Constraints")
             result = ProcessPolicyFlow(query)
             output = convert_to_typora_markdown(result)
-            Type = "Policy_Flow"
         else:
-            # print("Only Develop Mathematic Formulations. No Recommendation for Flights.")
             result = ProcessCA(query)
-            # output = result['output']
-
             output = convert_to_typora_markdown(result['output'])
-            # code = "This SBLP Problem Type is to develop mathematical model. Therefore, no code in this part."
-            Type = "CA"
-        # ai_response = f'It is a {Type} SBLP Problem,\n model: \n {result},\n code for this model: \n{code}'
     else:
         return "Automatic modeling for this problem type is not supported yet."
     return output
@@ -2645,9 +2455,7 @@ else:
 #     app.run(host='0.0.0.0', port=5050, debug=True)
 
 def open_browser():
-    # 自动打开cpolar公网地址（替换xxxx为你的实际URL）
     webbrowser.open_new('https://xxxx.cpolar.cn')  
-    # 可选：同时打开本地地址
     webbrowser.open_new_tab('http://localhost:5050/')
 
 @app.route('/')
@@ -2655,7 +2463,6 @@ def home():
     return "服务已启动！通过公网URL访问我吧！"
 
 if __name__ == '__main__':
-    # 确保只在主线程打开浏览器（避免debug模式重复打开）
     if os.environ.get('WERKZEUG_RUN_MAIN') != 'true':
         threading.Timer(1.0, open_browser).start()
     app.run(host='0.0.0.0', port=5050, debug=True)

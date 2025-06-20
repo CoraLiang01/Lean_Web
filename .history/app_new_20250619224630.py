@@ -66,46 +66,6 @@ def analyze():
         return jsonify({'error': 'Missing required parameters'}), 400
         
     try:
-        # # Initialize first LLM for question classification
-        # llm1 = ChatOpenAI(
-        #     temperature=0.0,
-        #     model_name="gpt-4",
-        #     openai_api_key=api_key
-        # )
-        
-        # # Load reference documents
-        # loader = CSVLoader(file_path="RefData.csv", encoding="utf-8")
-        # documents = loader.load()
-        
-        # # Create embeddings and vector store
-        # embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-        # vectors = FAISS.from_documents(documents, embeddings)
-        # retriever = vectors.as_retriever(search_kwargs={'k': 5})
-        
-        # # Build retrieval QA chain
-        # qa_chain = RetrievalQA.from_chain_type(
-        #     llm=llm1,
-        #     chain_type="stuff",
-        #     retriever=retriever,
-        #     return_source_documents=True,
-        # )
-        
-        # # Create QA tool
-        # qa_tool = Tool(
-        #     name="FileQA",
-        #     func=qa_chain.invoke,
-        #     description="Use this tool to answer questions about the problem type of the text."
-        # )
-        
-        # # Initialize Agent
-        # agent1 = initialize_agent(
-        #     tools=[qa_tool],
-        #     llm=llm1,
-        #     agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-        #     verbose=True,
-        #     handle_parsing_errors=True,
-        # )
-        # Initialize the LLM
         llm1 = ChatOpenAI(
             temperature=0.0, model_name="gpt-4", openai_api_key=api_key
         )
@@ -234,123 +194,11 @@ def solve():
         return jsonify({'error': 'Missing required parameters'}), 400
         
     try:
-        # Process based on problem type
-        if query == 't':
-            result_nrm = '''
-$$
-
-\small
-\begin{align*}
-\max \quad & \sum_{i=1}^{n} R_i x_i \\
-\mathrm{s.t.} \quad & x_i \leq I_i, \quad \forall i \quad \text{(inventory constraint)} \\
-& x_i \leq D_i, \quad \forall i \quad \text{(demand constraint)} \\
-& x_i \in \mathbb{Z}_+, \quad \forall i \\
-\quad & \text{where,} \\
-& R = [1283.7,\, 321.11,\, 1003.56,\, 371.56,\, 641.22,\, 1316.82,\, 1088.57,\, 513.64,\, 956.78,\, 178.22,\, 467.93,\, 377.8,\, 805.82,\, 894.34,\, 1409.21,\, 348.43,\, 1211.35,\, 875.91,\, 153.61,\, 951.85,\, 867.3,\, 992.14,\, 728.62,\, 1237.37,\, 287.36,\, 178.52,\, 1068.1,\, 1196.95,\, 973.62,\, 498.77,\, 1269.71,\, 518.67,\, 701.97,\, 338.6,\, 167.99,\, 678.72,\, 549.92,\, 1030.8,\, 478.36,\, 1285.81,\, 1175.92,\, 1118.63,\, 156.02,\, 753.55,\, 256.42,\, 1136.87,\, 1279.24,\, 887.06,\, 479.44,\, 1318.33,\, 1479.23,\, 367.91,\, 462.26,\, 448.61,\, 971.93,\, 1183.94,\, 1064.72,\, 872.16,\, 245.81,\, 1134.19,\, 972.1,\, 483.26,\, 507.13,\, 965.34,\, 1184.54,\, 139.14,\, 1128.07,\, 169.7,\, 1042.66,\, 869.95,\, 1385.88] \\
-& I = [70,\, 500,\, 80,\, 30,\, 250,\, 690,\, 340,\, 510,\, 990,\, 440,\, 190,\, 240,\, 850,\, 900,\, 760,\, 440,\, 240,\, 40,\, 700,\, 300,\, 680,\, 880,\, 670,\, 270,\, 890,\, 580,\, 480,\, 850,\, 920,\, 170,\, 960,\, 800,\, 290,\, 790,\, 260,\, 600,\, 40,\, 170,\, 760,\, 820,\, 590,\, 50,\, 470,\, 830,\, 670,\, 170,\, 350,\, 600,\, 610,\, 360,\, 760,\, 680,\, 160,\, 620,\, 210,\, 150,\, 200,\, 360,\, 950,\, 470,\, 290,\, 570,\, 790,\, 890,\, 580,\, 310,\, 560,\, 880,\, 350,\, 830] \\
-& D = [9,\, 65,\, 10,\, 4,\, 31,\, 98,\, 48,\, 64,\, 125,\, 66,\, 28,\, 29,\, 112,\, 116,\, 102,\, 55,\, 32,\, 5,\, 100,\, 40,\, 101,\, 131,\, 97,\, 40,\, 121,\, 81,\, 60,\, 112,\, 138,\, 26,\, 130,\, 102,\, 43,\, 109,\, 33,\, 84,\, 6,\, 25,\, 102,\, 121,\, 76,\, 7,\, 59,\, 125,\, 96,\, 24,\, 52,\, 87,\, 78,\, 79,\, 54,\, 95,\, 90,\, 20,\, 90,\, 30,\, 21,\, 25,\, 45,\, 125,\, 62,\, 42,\, 80,\, 109,\, 132,\, 75,\, 43,\, 75,\, 110,\, 48,\, 122]
-\end{align*}
-
-$$'''
-            # result_nrm = result_nrm.replace('\begin', '\\\\begin').replace('\end', '\\\end')
-            # result_nrm = result_nrm.replace(' \\', ' \\\\\\\\\\\\\\\\').replace('\f', '\\f')
-            # result_nrm = result_nrm.replace('\text', '\\mathrm').replace(',\, ', ', ')
-
-            # result_nrm = result_nrm.replace('\\\\\\\\\\\\\\\quad', '\quad')
-            # result_nrm = result_nrm.replace('\\\\\\\\\\\\\\\sum', '\sum')
-            # result_nrm = result_nrm.replace('\\\\\\\\\\\\\\\leq', '\leq')
-            # result_nrm = result_nrm.replace('\\\\\\\\\\\\\\\in', '\in')
-            # result_nrm = result_nrm.replace('\\\\\\\\\\\\\\\mathbb', '\mathbb')
-            # result_nrm = result_nrm.replace(' $i$', '')
-            # result_nrm = result_nrm.replace('for each product', '')
-            result_nrm = result_nrm.replace('\begin', '\\\\begin')\
-                        .replace('\end', '\\\\end')\
-                        .replace(' \\', ' \\\\\\\\\\\\\\\\')\
-                        .replace('\f', '\\f')\
-                        .replace('\text', '\\mathrm')\
-                        .replace(',\, ', ', ')\
-                        .replace('\\\\\\\\\\\\\\\quad', '\quad')\
-                        .replace('\\\\\\\\\\\\\\\sum', '\sum')\
-                        .replace('\\\\\\\\\\\\\\\leq', '\leq')\
-                        .replace('\\\\\\\\\\\\\\\in', '\in')\
-                        .replace('\\\\\\\\\\\\\\\mathbb', '\mathbb')\
-                        .replace(' $i$', '')\
-                        .replace('for each product', '')\
-                        .replace('\\forall', '\\\\forall').replace('$$\n','$$').replace('\n$$','$$')  # 这里是你要的替换
-
-            print(result_nrm)
-            result = '''
-This is a LaTeX expression:
-$$
-\small
-\\begin{align*}
-\max \quad &\sum_{i} A_i x_i \\\\\\\\
-\mathrm{s.t.} \quad & x_i \leq I_i, \quad \\forall i \quad \mathrm{(inventory ~ constraint)}\\\\\\\\
-\quad & x_i \leq d_i, \quad \\forall i \quad \mathrm{(demand ~ constraint)}\\\\\\\\
-\quad & \sum_i x_i \geq s, \quad \\forall i \quad \mathrm{(startup ~ constraint)}\\\\\\\\
-\quad & \mathrm{where} ~ I = [97, 240, 322, 281] \\\\\\\\
-\quad & A =  [11197, 9097, 11197, 9995] \\\\\\\\
-\quad & d =  [17, 26, 50, 53] \\\\\\\\
-\quad & s = 100
-\\end{align*}
-$$
-
-Second LaTeX expression:
-
-$$
-\small
-\\begin{align*}
-\max \quad & \sum_{i=1}^{n} R_i x_i \\\\\\\\
-\mathrm{s.t.} \quad & x_i \leq I_i, \quad \forall i \quad \mathrm{(inventory constraint)} \\\\\\\\
-& x_i \leq D_i, \quad \forall i \quad \mathrm{(demand constraint)} \\\\\\\\
-& x_i \in \mathbb{Z}_+, \quad \forall i \\\\\\\\
-\quad & \mathrm{where,} \\\\\\\\
-& R = [1283.7, 321.11, 1003.56, 371.56, 641.22, 1316.82, 1088.57, 513.64, 956.78, 178.22, 467.93, 377.8, 805.82, 894.34, 1409.21, 348.43, 1211.35, 875.91, 153.61, 951.85, 867.3, 992.14, 728.62, 1237.37, 287.36, 178.52, 1068.1, 1196.95, 973.62, 498.77, 1269.71, 518.67, 701.97, 338.6, 167.99, 678.72, 549.92, 1030.8, 478.36, 1285.81, 1175.92, 1118.63, 156.02, 753.55, 256.42, 1136.87, 1279.24, 887.06, 479.44, 1318.33, 1479.23, 367.91, 462.26, 448.61, 971.93, 1183.94, 1064.72, 872.16, 245.81, 1134.19, 972.1, 483.26, 507.13, 965.34, 1184.54, 139.14, 1128.07, 169.7, 1042.66, 869.95, 1385.88] \\\\\\\\
-& I = [70, 500, 80, 30, 250, 690, 340, 510, 990, 440, 190, 240, 850, 900, 760, 440, 240, 40, 700, 300, 680, 880, 670, 270, 890, 580, 480, 850, 920, 170, 960, 800, 290, 790, 260, 600, 40, 170, 760, 820, 590, 50, 470, 830, 670, 170, 350, 600, 610, 360, 760, 680, 160, 620, 210, 150, 200, 360, 950, 470, 290, 570, 790, 890, 580, 310, 560, 880, 350, 830] \\\\\\\\
-& D = [9, 65, 10, 4, 31, 98, 48, 64, 125, 66, 28, 29, 112, 116, 102, 55, 32, 5, 100, 40, 101, 131, 97, 40, 121, 81, 60, 112, 138, 26, 130, 102, 43, 109, 33, 84, 6, 25, 102, 121, 76, 7, 59, 125, 96, 24, 52, 87, 78, 79, 54, 95, 90, 20, 90, 30, 21, 25, 45, 125, 62, 42, 80, 109, 132, 75, 43, 75, 110, 48, 122]
-\\end{align*}
-$$
-
-Another LaTeX expression:
-$$
-\small
-\\begin{align*}
-\max \quad & \sum_{i}^n R_i x_i \\\\\\\\
-\mathrm{s.t.} \quad & x_i \leq I_i, \quad \\forall i \quad \mathrm{(inventory ~ constraint)} \\\\\\\\
-& x_i \leq D_i, \quad \\forall i \quad \mathrm{(demand ~ constraint)} \\\\\\\\
-& x_i \in \mathbb{Z}_+, \quad \\forall i \\\\\\\\
-\quad & \mathrm{where,} \\\\\\\\
-& R = [1283.7, 321.11, 1003.56, 371.56, 641.22, 1316.82, 513.64, 1088.57, 956.78, 178.22, 467.93, 377.8, 805.82, 894.34, 348.43, 1409.21, 1211.35, 875.91, 153.61, 951.85, 1237.37, 867.3, 992.14, 728.62, 287.36, 178.52, 1068.1, 973.62, 498.77, 1269.71, 1196.95, 518.67, 701.97, 338.6, 167.99, 678.72, 549.92, 1030.8, 478.36, 1285.81, 887.06, 1175.92, 1118.63, 156.02, 256.42, 753.55, 1136.87, 1279.24, 479.44, 1318.33, 1479.23, 367.91, 462.26, 1183.94, 1064.72, 448.61, 971.93, 872.16, 483.26, 972.1, 245.81, 1134.19, 507.13, 965.34, 1184.54, 139.14, 1128.07, 169.7, 1042.66, 869.95, 1385.88] \\\\\\\\
-& I = [70, 500, 80, 30, 250, 690, 510, 340, 990, 440, 190, 240, 850, 900, 440, 760, 240, 40, 700, 300, 270, 680, 880, 670, 890, 580, 480, 920, 170, 960, 850, 800, 290, 790, 260, 600, 40, 170, 760, 820, 600, 590, 50, 470, 670, 830, 170, 350, 600, 610, 360, 760, 680, 210, 150, 160, 620, 200, 290, 470, 360, 950, 570, 790, 890, 580, 310, 560, 880, 350, 830] \\\\\\\\
-& D = [9, 65, 10, 4, 31, 98, 64, 48, 125, 66, 28, 29, 112, 116, 55, 102, 32, 5, 100, 40, 40, 101, 131, 97, 121, 81, 60, 138, 26, 130, 112, 102, 43, 109, 33, 84, 6, 25, 102, 121, 87, 76, 7, 59, 96, 125, 24, 52, 78, 79, 54, 95, 90, 30, 21, 20, 90, 25, 42, 62, 45, 125, 80, 109, 132, 75, 43, 75, 110, 48, 122]
-\\end{align*}
-$$
-
-This is a math expression:
-
-$$
-x_i \leq I_i, \quad \\forall i
-$$
-
-And here's some Python code:
-
-```python
-def greet(name):
-    return f"Hello, {name}"
-```
-'''
-            # result = result.replace('\\', '\\\\')
-            # result = result.replace('\\\\', '\\\\\\\\')
-            
-            rendered_solution = result_nrm
-            # rendered_solution = markdown.markdown(result, extensions=["fenced_code", CodeHiliteExtension()])
-
-        else:
-            result = process_problem_type(query, api_key, problem_type)
-            # result = result.replace('\\', '\\\\')
-            # result = result.replace('\\\\', '\\\\\\\\')
-        # rendered_solution = render_markdown_with_highlight(result)
-            rendered_solution = markdown.markdown(result, extensions=["fenced_code", CodeHiliteExtension()])
+        result = process_problem_type(query, api_key, problem_type)
+        # result = result.replace('\\', '\\\\')
+        # result = result.replace('\\\\', '\\\\\\\\')
+    # rendered_solution = render_markdown_with_highlight(result)
+        rendered_solution = markdown.markdown(result, extensions=["fenced_code", CodeHiliteExtension()])
 
         rendered_solution = result
         return jsonify({
@@ -400,14 +248,6 @@ def render_markdown_with_highlight(md_text):
     return sanitized_content
 
 def convert_to_typora_markdown(content):
-    # content = content.replace(r'\[', '$$').replace(r'\]', '$$') 
-    # content = content.replace(r'\( ', '$').replace(r' \)', '$') 
-    # content = content.replace(r'\(', '$').replace(r'\)', '$')
-    # content = content.replace(r'\text{Maximize}', '\max').replace(r'\text{Maximize}', '\min')
-    # content = content.replace(r'\t ', '\\t').replace(r' \f', '\\f') 
-    # content = content.replace(r'\{ ', '\\{').replace(r' \}', '\\}') 
-    # content = content.replace('\text', '\\mathrm')
-    # content = content.replace('\t', '\\t')
     content = content.replace(r'\[', '$$').replace(r'\]', '$$') 
     content = content.replace(r'\( ', '$').replace(r' \)', '$') 
     content = content.replace(r'\(', '$').replace(r'\)', '$')
@@ -419,11 +259,6 @@ def convert_to_typora_markdown(content):
     content = content.replace('\t', '\\t')  # 保留原来的制表符替换
 
     return content
-
-# def extract_problem_type(output_text):
-#     pattern = r'(Network Revenue Management|Resource Allocation|Transportation|Sales-Based Linear Programming|SBLP|Facility Location|Others without CSV|Others without csv)'
-#     match = re.search(pattern, output_text, re.IGNORECASE)
-#     return match.group(0) if match else "Others with CSV"
 
 def extract_problem_type(output_text):
     pattern = r'(Network Revenue Management|Network Revenue Management Problem|Resource Allocation|Resource Allocation Problem|Transportation|Transportation Problem|Facility Location Problem|Assignment Problem|AP|Uncapacited Facility Location Problem|NRM|RA|TP|FLP|UFLP|Others without CSV|Sales-Based Linear Programming|SBLP)'
@@ -468,8 +303,6 @@ def process_dataset_address(dataset_address: str) -> List[Document]:
             continue
     
     return documents
-
-
 
 
 def get_NRM_response(query,api_key,uploaded_files):

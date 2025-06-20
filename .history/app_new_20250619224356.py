@@ -408,6 +408,7 @@ def convert_to_typora_markdown(content):
     # content = content.replace(r'\{ ', '\\{').replace(r' \}', '\\}') 
     # content = content.replace('\text', '\\mathrm')
     # content = content.replace('\t', '\\t')
+
     content = content.replace(r'\[', '$$').replace(r'\]', '$$') 
     content = content.replace(r'\( ', '$').replace(r' \)', '$') 
     content = content.replace(r'\(', '$').replace(r'\)', '$')
