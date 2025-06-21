@@ -2057,7 +2057,7 @@ def process_problem_type(query, api_key, problem_type):
             return results
 
         def FlowAgent(query):
-            loader = CSVLoader(file_path="Large_Scale_Or_Files/RAG_Example_SBLP_Flow.csv", encoding="utf-8")
+            loader = CSVLoader(file_path="RAG_Example_SBLP_Flow.csv", encoding="utf-8")
             data = loader.load()
             documents = data
             embeddings = OpenAIEmbeddings(openai_api_key=api_key)
