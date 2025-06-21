@@ -2066,7 +2066,7 @@ def process_problem_type(query, api_key, problem_type):
             # similar_results = retrieve_similar_docs(query,retriever)
             # problem_description = similar_results[0]['content'].replace("prompt:", "").strip()  
             problem_description = '''
-Based on flight ticket options provided in file "od_demand.csv","flight.csv","v1.csv","v2.csv", along with their average passengers (Avg Pax), average prices (Avg Price), and capacity coefficients (Flex Cpy Coef), considering that each Eco_flex ticket consumes 2 units of flight capacity and each Eco_lite ticket consumes 1 unit of capacity, while enforcing flow conservation constraints at each airport for long-term planning model, develop a Sales-Based Linear Programming (SBLP) model. 
+Based on flight ticket options provided in file "./Test_Dataset/Air_NRM/information.csv", along with their average passengers (Avg Pax), average prices (Avg Price), and capacity coefficients (Flex Cpy Coef), considering that each Eco_flex ticket consumes 2 units of flight capacity and each Eco_lite ticket consumes 1 unit of capacity, while enforcing flow conservation constraints at each airport for long-term planning model, develop a Sales-Based Linear Programming (SBLP) model. 
 
 The goal of this model is to recommend the optimal 3 flights that maximize total ticket sale revenue, specifically among flights where the origin-destination pairs are: 
 OD = ('A', 'B') or OD = ('A', 'C') or OD = ('B', 'A') or OD = ('B', 'C') or ('C', 'A') or ('C', 'B') in a departure period (7am-12:00am) in which the optional flights are:
@@ -2462,16 +2462,14 @@ else:
 
         def CA_Agent(query):
 
-            # loader = CSVLoader(file_path="Large_Scale_Or_Files/RAG_Example_SBLP_CA.csv", encoding="utf-8")
-            # data = loader.load()
-            # documents = data
-            # embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-            # vectors = FAISS.from_documents(documents, embeddings)
-            # retriever = vectors.as_retriever(search_kwargs={'k': 1})
-            # similar_results = retrieve_similar_docs(query,retriever)
-            # problem_description = similar_results[0]['content'].replace("prompt:", "").strip()  
-
-            problem_description = '''Based on all flight ticket choices in 'od_demand.csv','flight.csv', with attraction values in v1 and shadow attraction value ratios in v2, develop the SBLP(sales-based linear programming) formulation  with flights (OD = ('B', 'A') AND Departure Time='12:25'), (OD = ('C', 'B') AND Departure Time='14:15'), (OD = ('B', 'A') AND Departure Time='20:25') that maximize the total revenue of flight ticket sales. The SBLP should include decision variables, objective function, balance constraints, scale constraints, nonnegative constraints.'''
+            loader = CSVLoader(file_path="Large_Scale_Or_Files/RAG_Example_SBLP_CA.csv", encoding="utf-8")
+            data = loader.load()
+            documents = data
+            embeddings = OpenAIEmbeddings(openai_api_key=api_key)
+            vectors = FAISS.from_documents(documents, embeddings)
+            retriever = vectors.as_retriever(search_kwargs={'k': 1})
+            similar_results = retrieve_similar_docs(query,retriever)
+            problem_description = similar_results[0]['content'].replace("prompt:", "").strip()  
             example_matches = retrieve_key_information(problem_description)
             example_data_description = csv_qa_tool_CA(example_matches)
             example_data_description = example_data_description.replace('{', '{{')

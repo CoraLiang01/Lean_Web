@@ -2462,16 +2462,16 @@ else:
 
         def CA_Agent(query):
 
-            # loader = CSVLoader(file_path="Large_Scale_Or_Files/RAG_Example_SBLP_CA.csv", encoding="utf-8")
-            # data = loader.load()
-            # documents = data
-            # embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-            # vectors = FAISS.from_documents(documents, embeddings)
-            # retriever = vectors.as_retriever(search_kwargs={'k': 1})
-            # similar_results = retrieve_similar_docs(query,retriever)
-            # problem_description = similar_results[0]['content'].replace("prompt:", "").strip()  
+            loader = CSVLoader(file_path="Large_Scale_Or_Files/RAG_Example_SBLP_CA.csv", encoding="utf-8")
+            data = loader.load()
+            documents = data
+            embeddings = OpenAIEmbeddings(openai_api_key=api_key)
+            vectors = FAISS.from_documents(documents, embeddings)
+            retriever = vectors.as_retriever(search_kwargs={'k': 1})
+            similar_results = retrieve_similar_docs(query,retriever)
+            problem_description = similar_results[0]['content'].replace("prompt:", "").strip()  
 
-            problem_description = '''Based on all flight ticket choices in 'od_demand.csv','flight.csv', with attraction values in v1 and shadow attraction value ratios in v2, develop the SBLP(sales-based linear programming) formulation  with flights (OD = ('B', 'A') AND Departure Time='12:25'), (OD = ('C', 'B') AND Departure Time='14:15'), (OD = ('B', 'A') AND Departure Time='20:25') that maximize the total revenue of flight ticket sales. The SBLP should include decision variables, objective function, balance constraints, scale constraints, nonnegative constraints.'''
+            problem_description = ''''''
             example_matches = retrieve_key_information(problem_description)
             example_data_description = csv_qa_tool_CA(example_matches)
             example_data_description = example_data_description.replace('{', '{{')
