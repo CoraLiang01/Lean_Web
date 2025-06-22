@@ -1658,11 +1658,11 @@ def process_problem_type(query, api_key, problem_type):
             for df_index, (file_name, df) in enumerate(uploaded_files):
                 if 'v1' in file_name:
                     v1 = df
-                elif 'v2' in file_name:
+                elif 'v2.csv' in file_name:
                     v2 = df
-                elif 'od_demand' in file_name:
+                elif 'od_demand.csv' in file_name:
                     demand = df
-                elif 'flight' in file_name:
+                elif 'flight.csv' in file_name:
                     flight = df
             return v1,v2,demand,flight
         

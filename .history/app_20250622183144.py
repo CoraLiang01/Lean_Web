@@ -1660,9 +1660,9 @@ def process_problem_type(query, api_key, problem_type):
                     v1 = df
                 elif 'v2' in file_name:
                     v2 = df
-                elif 'od_demand' in file_name:
+                elif 'od_demand.csv' in file_name:
                     demand = df
-                elif 'flight' in file_name:
+                elif 'flight.csv' in file_name:
                     flight = df
             return v1,v2,demand,flight
         
