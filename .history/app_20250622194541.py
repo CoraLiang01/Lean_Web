@@ -1669,9 +1669,6 @@ def process_problem_type(query, api_key, problem_type):
             if v2 is None:
                 v2 = pd.read_csv('v2.csv')
             if demand is None:
-                demand = pd.read_csv('od_demand.csv')
-            if flight is None:
-                flight = pd.read_csv('flight.csv')
             return v1,v2,demand,flight
         
         def New_Vectors_Flight(query):

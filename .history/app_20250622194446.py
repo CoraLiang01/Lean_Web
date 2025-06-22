@@ -1664,14 +1664,7 @@ def process_problem_type(query, api_key, problem_type):
                     demand = df
                 elif 'flight' in file_name:
                     flight = df
-            if v1 is None:
-                v1 = pd.read_csv('v1.csv')
-            if v2 is None:
-                v2 = pd.read_csv('v2.csv')
-            if demand is None:
-                demand = pd.read_csv('od_demand.csv')
-            if flight is None:
-                flight = pd.read_csv('flight.csv')
+            if v1
             return v1,v2,demand,flight
         
         def New_Vectors_Flight(query):
