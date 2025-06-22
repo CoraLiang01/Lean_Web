@@ -2300,6 +2300,9 @@ else:
 
         def policy_sblp_flow_model_code(query):
             agent2 = FlowAgent(query)
+            llm_code = ChatOpenAI(
+                temperature=0.0, model_name="gpt-4.1", openai_api_key=api_key
+            )
             result = agent2.invoke({"input": query})
             output_model = result['output']
 
