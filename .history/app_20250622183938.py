@@ -2592,7 +2592,7 @@ else:
 
             tools = [Tool(name="CSVQA", func=csv_qa_tool_CA, description="Retrieve flight data."),Tool(name="CName", func=retrieve_key_information, description="Retrieve flight information.")]
 
-            llm = ChatOpenAI(model="gpt-4", temperature=0, openai_api_key=api_key)
+            llm = ChatOpenAI(model="gpt-4.1", temperature=0, openai_api_key=api_key)
             prefix = f"""You are an assistant that generates a mathematical model based on the user's description and provided CSV data.
 
             Please refer to the following example and generate the answer in the same format:
